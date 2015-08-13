@@ -3,6 +3,7 @@ package com.example.dominik.timetoweekend;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,8 +12,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 
-public class WelcomeActivity extends Activity {
+public class CountingClock extends Activity {
     SharedPreferences userPreferences;
+    SharedPreferences.Editor userPreferencesEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,18 +24,16 @@ public class WelcomeActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_counting_clock);
 
         userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustwieñ
-
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_welcome, menu);
-
+        getMenuInflater().inflate(R.menu.menu_counting_clock, menu);
         return true;
     }
 
@@ -52,16 +52,21 @@ public class WelcomeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void clickNext(View view){
+    public void returnToSettings(View view){
 
-        if (userPreferences.getInt("NumberOfDay",9)==9){
-            Intent intent = new Intent(this, Settings.class);
-            startActivity(intent);
-            finish();
-        }else{
-            Intent intent = new Intent(this, CountingClock.class);
-            startActivity(intent);
-            finish();
-        }
+        userPreferencesEditor = userPreferences.edit();
+
+        userPreferencesEditor.putInt("day", 9);
+        userPreferencesEditor.putInt("hour", 0);
+        userPreferencesEditor.putInt("minute", 0);
+
+        userPreferencesEditor.commit();
+
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
+        finish();
     }
+
+
+
 }

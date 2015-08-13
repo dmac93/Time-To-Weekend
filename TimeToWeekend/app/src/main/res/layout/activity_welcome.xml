@@ -9,15 +9,16 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="@string/clickNext"
         android:id="@+id/clickNext"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="clickNext"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/welcomeTitle"
         android:id="@+id/welcomeTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
