@@ -3,20 +3,14 @@ package com.example.dominik.timetoweekend;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 
 public class Settings extends Activity {
     SharedPreferences userPreferences;
@@ -27,13 +21,13 @@ public class Settings extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //pe³ny ekran
+        //pelny ekran
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_settings);
 
-        userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustwieñ
+        userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustawien
         spinnerItems();
 
     }
@@ -68,7 +62,6 @@ public class Settings extends Activity {
         startActivity(intent);
         finish();
 
-
     }
 
     public void spinnerItems(){
@@ -98,7 +91,8 @@ public class Settings extends Activity {
 
         userPreferencesEditor.putInt("day", (int)spinner.getSelectedItemId());
         userPreferencesEditor.putInt("hour", (int)spinHour.getSelectedItemId());
-        userPreferencesEditor.putInt("minute", (int)spinMinute.getSelectedItemId());
+        userPreferencesEditor.putInt("minute", (int) spinMinute.getSelectedItemId());
+        userPreferencesEditor.putLong("forProgressbar",0);
 
         userPreferencesEditor.commit();
     }

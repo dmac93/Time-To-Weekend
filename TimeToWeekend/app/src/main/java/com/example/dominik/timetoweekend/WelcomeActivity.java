@@ -9,23 +9,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 
 public class WelcomeActivity extends Activity {
-    SharedPreferences userPreferences;
+    private SharedPreferences userPreferences;
+    private Button nextbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //pe³ny ekran
+        //pelny ekran
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_welcome);
 
-        userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustwieñ
+        userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustawien
+        nextbutton = (Button) findViewById(R.id.clickNext);
 
+        if (userPreferences.getInt("day",9)==9){
+            nextbutton.setText(R.string.clickNext);
+        }else{
+            nextbutton.setText(R.string.clickNext2);
+        }
 
     }
 
@@ -54,7 +62,7 @@ public class WelcomeActivity extends Activity {
 
     public void clickNext(View view){
 
-        if (userPreferences.getInt("NumberOfDay",9)==9){
+        if (userPreferences.getInt("day",9)==9){
             Intent intent = new Intent(this, Settings.class);
             startActivity(intent);
             finish();

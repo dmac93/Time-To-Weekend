@@ -1,49 +1,82 @@
 package com.example.dominik.timetoweekend;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.CountDownTimer;
-import android.support.v7.app.ActionBarActivity;
+import android.os.Handler;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 
 public class CountingClock extends Activity {
-    SharedPreferences userPreferences;
-    SharedPreferences.Editor userPreferencesEditor;
-    long time;
-    TextView topClock,bottomClock;
+    private SharedPreferences userPreferences;
+    private SharedPreferences.Editor userPreferencesEditor;
+    private long time;
+    private int progressStatus=0;
+    private int i = 1000;
+    private TextView topClock,bottomClock;
+    private ProgressBar progressBar;
+    private Handler handler = new Handler();
+    private MediaPlayer mySound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //pe³ny ekran
+        //pelny ekran
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_counting_clock);
 
-        userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustwieñ
+        userPreferences = getSharedPreferences("Saved", 0); //wczytywanie ustawien
         topClock= (TextView) findViewById(R.id.topClock);
         bottomClock = (TextView) findViewById(R.id.bottomClock);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        countTimeLeft();
+        if(userPreferences.getInt("day",9)!=9){
+            countTimeLeft();
 
-        final CounterClass timer = new CounterClass(time, 1000);
-        timer.start();
+            final CounterClass timer = new CounterClass(time, 1000);
+            timer.start();
+
+            new Thread(new Runnable() {
+                public void run() {
+                    while (progressStatus < 100) {
+                        progressStatus = (int)(((double)i/(double)time)*100);
+                        i=i+1000;
+                        handler.post(new Runnable() {
+                            public void run() {
+                                progressBar.setProgress(progressStatus);
+                            }
+                        });
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        }
+
 
     }
 
@@ -92,7 +125,7 @@ public class CountingClock extends Activity {
 
         Calendar CurrentDateTime = Calendar.getInstance();
 
-        int csec, cmin, chour, cday, pom;
+        int csec, cmin, chour, cday;
 
         csec = CurrentDateTime.get(Calendar.SECOND);
         cmin = CurrentDateTime.get(Calendar.MINUTE);
@@ -103,15 +136,30 @@ public class CountingClock extends Activity {
                 TimeUnit.MINUTES.toMillis((long)(min-cmin))-TimeUnit.SECONDS.toMillis((long)csec);
 
         if (time<0) time=time+TimeUnit.DAYS.toMillis(7);
+    }
 
-        userPreferencesEditor = userPreferences.edit();
-        userPreferencesEditor.putLong("forProgressbar", time);
-        userPreferencesEditor.commit();
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void notificate() {
+        Intent intent = new Intent(this, CountingClock.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 
+        Notification n = new Notification.Builder(this)
+                .setContentTitle("Koniec!")
+                .setContentText("Masz weekend!")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pIntent)
+                .setAutoCancel(true).build();
 
 
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+        notificationManager.notify(0, n);
+        final Vibrator vibe = (Vibrator) CountingClock.this.getSystemService(Context.VIBRATOR_SERVICE);
+        mySound = MediaPlayer.create(this, R.raw.song);
+        mySound.start();
+        vibe.vibrate(2000);
     }
 
     public class CounterClass extends CountDownTimer {
@@ -141,18 +189,17 @@ public class CountingClock extends Activity {
 
             topClock.setText(toTopClock);
             bottomClock.setText(toBottomClock);
-
-            }
+        }
 
         @Override
         public void onFinish() {
-
+            topClock.setText(R.string.topClock);
+            bottomClock.setText(R.string.bottomClock);
+            userPreferencesEditor = userPreferences.edit();
+            userPreferencesEditor.putInt("day", 9);
+            userPreferencesEditor.commit();
+            notificate();
         }
     }
-
-
-
-
-
 
 }

@@ -8,16 +8,21 @@
     <string name="title_activity_counting_clock">CountingClock</string>
     <!-- WelcomeActivity -->
     <string name="welcomeTitle">Witaj w programie</string>
-    <string name="clickNext">Dalej</string>
+    <string name="clickNext">Ustaw czas</string>
+    <string name="clickNext2">Sprawdź ile pozostało czasu</string>
     <!-- SetingsActivity-->
     <string name="titleSettings">Ustaw dzień tygodnia</string>
     <string name="titleHour">Podaj godzinę</string>
     <string name="toClockButton">Włącz zegar</string>
     <!-- CountingClockActivity-->
     <string name="titleClock">Do weekendu pozostało</string>
-    <string name="topClock">--</string>
-    <string name="bottomClock">--</string>
+    <string name="topClock">Koniec!</string>
+    <string name="bottomClock">Już masz weekend!</string>
     <string name="settingsButton">Zmień dzień i zresetuj ustawienia</string>
+    <string name="day">dni</string>
+    <string name="hour">godzin</string>
+    <string name="minute">minut</string>
+    <string name="second">sekund</string>
 
     <!-- arrays for spinners-->
     <string-array name="daysArray">
